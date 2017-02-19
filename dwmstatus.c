@@ -1,4 +1,4 @@
-#define _BSD_SOURCE
+#define _DEFAULT_SOURCE
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,8 +13,6 @@
 #include <X11/Xlib.h>
 
 char *sysbat = "/sys/class/power_supply/BAT0/capacity";
-char *tzsf = "US/Pacific";
-char *tztokyo= "Japan";
 char *tzutc = "UTC";
 char *tzberlin = "Europe/Berlin";
 
@@ -116,8 +114,6 @@ main(void)
 	char *cap;
 	char *status;
 	char *avgs;
-	char *tmsf;
-	char *tmtokyo;
 	char *tmutc;
 	char *tmbln;
 
@@ -129,17 +125,13 @@ main(void)
 	for (;;sleep(90)) {
 		cap = batcap();
 		avgs = loadavg();
-		tmsf = mktimes("%H:%M", tzsf);
-		tmtokyo = mktimes("%H:%M", tztokyo);
 		tmutc = mktimes("%H:%M", tzutc);
 		tmbln = mktimes("KW %W %a %d %b %H:%M %Z %Y", tzberlin);
 
-		status = smprintf("B:%s L:%s SF:%s JP:%s U:%s %s",
-				cap, avgs, tmsf, tmtokyo, tmutc, tmbln);
+		status = smprintf("B:%s L:%s U:%s %s",
+				cap, avgs, tmutc, tmbln);
 		setstatus(status);
 		free(avgs);
-		free(tmsf);
-		free(tmtokyo);
 		free(tmutc);
 		free(tmbln);
 		free(status);
